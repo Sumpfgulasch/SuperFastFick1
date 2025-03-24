@@ -37,6 +37,8 @@ void Start()
         originalColor = rend.material.color;
         
     gameManager = FindAnyObjectByType<GameManager>();
+
+    AudioManager.Instance.Play3DAudio(AudioEvent.PlayerMovement, transform);
 }
 
 void Update()
@@ -94,13 +96,14 @@ IEnumerator Attack()
         moveTween.Kill();
         moveTween = null;
     }
-    AudioManager.Instance.PlayAttackSound();
+    AudioManager.Instance.Play3DAudio(AudioEvent.PlayerAttack, transform);
 
     // Attack animation: quickly scale up and change color to red then back to normal
     if (rend != null)
     {
         Sequence seq = DOTween.Sequence();
-        seq.Append(transform.DOScale(originalScale * attackScaleMultiplier, attackDuration / 2))
+        var attackScale = new Vector3(originalScale.x * attackScaleMultiplier, originalScale.y, originalScale.z * attackScaleMultiplier);
+        seq.Append(transform.DOScale(attackScale, attackDuration / 2))
            .Join(rend.material.DOColor(Color.red, attackDuration / 2))
            .Append(transform.DOScale(originalScale, attackDuration / 2))
            .Join(rend.material.DOColor(originalColor, attackDuration / 2));

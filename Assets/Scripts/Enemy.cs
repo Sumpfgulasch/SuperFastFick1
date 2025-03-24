@@ -9,7 +9,7 @@ using UnityEngine.Serialization;
 public class Enemy : MonoBehaviour
 {
 enum State { Idle, Flee, Recover }
-private State currentState;
+private State currentState = State.Idle;
 
 [Header("Path and Speed Settings")]
 public float idleSpeed = 3.5f;
@@ -36,7 +36,7 @@ void Start() {
     waypoints = WayPoints.instance.GetRandomPath();
     agent = GetComponent<NavMeshAgent>();
     originalScale = transform.localScale;
-    ChangeState(State.Idle);
+    ChangeState(State.Idle, true);
 
     // Find the player (make sure your Player GameObject is tagged "Player")
     GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -71,7 +71,7 @@ void Start() {
 }
 
 private void UpdateFmodParameter(int enemyState) {
-    AudioManager.Instance.SetLocalParameter(audioInstance, FmodParameter.ENEMY_STATE, enemyState);
+    AudioManager.Instance.SetLocalParameter(audioInstance, FmodParameter.LOCAL_ENEMY_STATE, enemyState);
 }
 
 
@@ -164,8 +164,12 @@ private bool InPlayerSight()
     return false;
 }
 
-private void ChangeState(State newState)
+private void ChangeState(State newState, bool initialize = false)
 {
+    // if (!initialize && newState == currentState) {
+    //     return;
+    // }
+
     currentState = newState;
     switch (newState)
     {
@@ -186,12 +190,19 @@ private void ChangeState(State newState)
                 }
                 agent.SetDestination(waypoints[currentWaypointIndex].position);
             }
+
+            if (!initialize) {
+                GameManager.Instance.FleeingEnemies--;
+                Debug.Log("fleeing enemies: " + GameManager.Instance.FleeingEnemies);
+            }
             StartScaleTween(1f, 0.3f); // slower scale tween animation for idle/walk
             break;
 
         case State.Flee:
             agent.speed = fleeSpeed;
             fleeTimer = 0f;
+            GameManager.Instance.FleeingEnemies++;
+            Debug.Log("fleeing enemies: " + GameManager.Instance.FleeingEnemies);
             StartScaleTween(1f, 0.15f); // faster pulsing while fleeing
             break;
 
@@ -220,10 +231,13 @@ public void Die() {
 }
 
 private void Destroy() {
+    if (currentState != State.Idle) {
+        GameManager.Instance.FleeingEnemies--;
+    }
+
     AudioManager.Instance.StopAudio(audioInstance);
     DOTween.KillAll(gameObject);
     Destroy(gameObject);
-    Destroy(this);
 }
 
 // Optional: visualize the detection radius in the Scene view

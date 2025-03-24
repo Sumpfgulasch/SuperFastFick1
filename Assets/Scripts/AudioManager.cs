@@ -2,8 +2,9 @@ using FMOD.Studio;
 using UnityEngine;
 
 public class FmodParameter {
-    public const string ENEMY_STATE = "EnemyState";
+    public const string FLEEING_ENEMIES = "FleeingEnemies";
     public const string PLAYER_STATE = "PlayerState";
+    public const string LOCAL_ENEMY_STATE = "EnemyState";
 }
 
 public class AudioManager : MonoBehaviour
@@ -35,12 +36,6 @@ public class AudioManager : MonoBehaviour
         //     runAudio.Stop();
     }
 
-    public void PlayAttackSound()
-    {
-        // if (attackAudio != null)
-        //     attackAudio.PlayOneShot(attackAudio.clip);
-    }
-
     public EventInstance Play3DAudio(FMOD.GUID audioEvent, Transform target) {
         var instance = FMODUnity.RuntimeManager.CreateInstance(audioEvent);
         instance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(target));
@@ -53,6 +48,10 @@ public class AudioManager : MonoBehaviour
         if (instance.isValid()) {
             instance.stop(STOP_MODE.ALLOWFADEOUT);
         }
+    }
+    
+    public void SetGlobalParameter(string fmodParameter, float value) {
+        FMODUnity.RuntimeManager.StudioSystem.setParameterByName(fmodParameter, value);
     }
 
     public void SetLocalParameter(EventInstance fmodEvent,string fmodParameter, float value) {

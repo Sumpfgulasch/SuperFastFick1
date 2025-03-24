@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{8410478f-bcfc-4b1f-a9dd-f2f4ddd05fac}">
+		<property name="name">
+			<value>FleeingEnemies</value>
+		</property>
+		<relationship name="folder">
+			<destination>{fe60d89f-f9af-4a22-982a-e3d65d9473f8}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{dc40417d-54cc-4f0a-b750-ddff9e6dcc44}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{dc40417d-54cc-4f0a-b750-ddff9e6dcc44}">
+		<property name="parameterType">
+			<value>1</value>
+		</property>
+		<property name="maximum">
+			<value>11</value>
+		</property>
+		<property name="isGlobal">
+			<value>true</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+		<property name="isExposedRecursively">
+			<value>false</value>
+		</property>
+	</object>
+</objects>
