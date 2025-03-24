@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
 using DG.Tweening;
+using FMOD.Studio;
+using Klang.Seed.Audio;
 
 public class Enemy : MonoBehaviour
 {
@@ -25,6 +27,7 @@ private Transform playerTransform;
 private Tween scaleTween;
 private Vector3 originalScale;
 private Transform[] waypoints;
+private EventInstance audioInstance;
 
 void Start() {
     waypoints = WayPoints.instance.GetRandomPath();
@@ -58,6 +61,14 @@ void Start() {
                                     new Vector3(playerColor.r, playerColor.g, playerColor.b)) < 0.3f && attempts < 10);
         rend.material.color = enemyColor;
     }
+    
+    // Audio
+    audioInstance = AudioManager.Instance.Play3DAudio(AudioEvent.Enemy, transform);
+    UpdateFmodParameter((int) currentState);
+}
+
+private void UpdateFmodParameter(int enemyState) {
+    AudioManager.Instance.SetLocalParameter(audioInstance, FmodParameter.ENEMY_STATE, enemyState);
 }
 
 void Update()
@@ -107,6 +118,7 @@ void Update()
                 ChangeState(State.Flee);
             break;
     }
+
 }
 
 // Checks whether the player is within detectionRadius and unobstructed by obstacles.
@@ -164,6 +176,8 @@ private void ChangeState(State newState)
             StartScaleTween(1f, 0.3f);
             break;
     }
+    
+    UpdateFmodParameter((int) currentState);
 }
 
 // Uses DOTween to create a looping ping-pong scale animation on the capsule.

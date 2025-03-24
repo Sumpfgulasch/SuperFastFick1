@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{be7104d2-1fdf-4b5b-8a41-8971683a8cfe}">
+		<property name="assetPath">
+			<value>Enemy/Female2_Scream-004.ogg</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>1</value>
+		</property>
+		<property name="length">
+			<value>0.70656249999999998</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{21212df7-a7ff-47f9-9ee0-b893f7175b54}</destination>
+		</relationship>
+	</object>
+</objects>

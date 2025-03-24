@@ -11,12 +11,14 @@ namespace Klang.Seed.Audio
 {
     public class AudioEvent
     {
+        public static readonly FMOD.GUID Enemy = new FMOD.GUID { Data1 = 624951414, Data2 = 1102676664, Data3 = 484741554, Data4 = -2073277004 };
+        public static readonly FMOD.GUID Player = new FMOD.GUID { Data1 = 545116639, Data2 = 1238004064, Data3 = 472465560, Data4 = 1160638886 };
         public static readonly FMOD.GUID Test = new FMOD.GUID { Data1 = -9758484, Data2 = 1245021375, Data3 = 1395276450, Data4 = 767652684 };
 
 
         public static readonly Dictionary<string, FMOD.GUID> AudioEventNameToGuid = new Dictionary<string, FMOD.GUID>()
         {
-                {"Test", Test}, 
+                {"Enemy", Enemy}, {"Player", Player}, {"Test", Test}, 
         };
     }
 
