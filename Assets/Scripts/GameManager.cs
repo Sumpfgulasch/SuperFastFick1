@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -21,13 +23,11 @@ public class GameManager : MonoBehaviour {
     private int score = 0;
 
     private int fleeingEnemies = 0;
-    public int FleeingEnemies {
-        get => fleeingEnemies;
-        set {
-            fleeingEnemies = value;
-            AudioManager.Instance.SetGlobalParameter(FmodParameter.FLEEING_ENEMIES, fleeingEnemies);
-        }
-    }
+
+    public List<Enemy> Enemies { get; set; } = new List<Enemy>();
+
+    public void RegisterEnemy(Enemy enemy) => Enemies.Add(enemy);
+    public void UnregisterEnemy(Enemy enemy) => Enemies.Remove(enemy);
 
     void Awake() {
         if (Instance == null) {
@@ -48,6 +48,13 @@ public class GameManager : MonoBehaviour {
     }
 
     void Update() {
+        // Audio
+        fleeingEnemies = 0;
+        foreach (var enemy in Enemies.Where(enemy => enemy.CurrentState != Enemy.State.Idle)) {
+            fleeingEnemies++;
+        }
+        AudioManager.Instance.SetGlobalParameter(FmodParameter.FLEEING_ENEMIES, fleeingEnemies);
+        
         // Ensure that there are always (up to) maxEnemies in the scene
         Enemy[] enemies = FindObjectsOfType<Enemy>();
         if (enemies.Length < maxEnemies)

@@ -12,6 +12,7 @@ namespace Klang.Seed.Audio
     public class AudioEvent
     {
         public static readonly FMOD.GUID Enemy = new FMOD.GUID { Data1 = 624951414, Data2 = 1102676664, Data3 = 484741554, Data4 = -2073277004 };
+        public static readonly FMOD.GUID EnemyDeath = new FMOD.GUID { Data1 = 1941384649, Data2 = 1196568739, Data3 = 561736845, Data4 = 1837078772 };
         public static readonly FMOD.GUID PlayerAttack = new FMOD.GUID { Data1 = -982986684, Data2 = 1299884347, Data3 = 1040659360, Data4 = -1784076136 };
         public static readonly FMOD.GUID PlayerMovement = new FMOD.GUID { Data1 = -1804072002, Data2 = 1218128428, Data3 = -1924718700, Data4 = 1745613375 };
         public static readonly FMOD.GUID Test = new FMOD.GUID { Data1 = -9758484, Data2 = 1245021375, Data3 = 1395276450, Data4 = 767652684 };
@@ -19,7 +20,7 @@ namespace Klang.Seed.Audio
 
         public static readonly Dictionary<string, FMOD.GUID> AudioEventNameToGuid = new Dictionary<string, FMOD.GUID>()
         {
-                {"Enemy", Enemy}, {"PlayerAttack", PlayerAttack}, {"PlayerMovement", PlayerMovement}, {"Test", Test}, 
+                {"Enemy", Enemy}, {"EnemyDeath", EnemyDeath}, {"PlayerAttack", PlayerAttack}, {"PlayerMovement", PlayerMovement}, {"Test", Test}, 
         };
     }
 
