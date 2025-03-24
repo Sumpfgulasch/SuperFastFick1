@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using Klang.Seed.Audio;
 
 public class Player : MonoBehaviour
 {

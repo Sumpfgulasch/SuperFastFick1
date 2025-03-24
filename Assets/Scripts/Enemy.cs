@@ -8,7 +8,6 @@ enum State { Idle, Flee, Recover }
 private State currentState;
 
 [Header("Path and Speed Settings")]
-public Transform[] waypoints;       // Predefined path vertices assigned via the scene
 public float idleSpeed = 3.5f;
 public float fleeSpeed = 7f;
 
@@ -25,9 +24,10 @@ private NavMeshAgent agent;
 private Transform playerTransform;
 private Tween scaleTween;
 private Vector3 originalScale;
+private Transform[] waypoints;
 
-void Start()
-{
+void Start() {
+    waypoints = WayPoints.instance.GetRandomPath();
     agent = GetComponent<NavMeshAgent>();
     originalScale = transform.localScale;
     ChangeState(State.Idle);
@@ -88,6 +88,9 @@ void Update()
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(fleeDestination, out hit, 10f, NavMesh.AllAreas))
                     agent.SetDestination(hit.position);
+                // else {
+                //     Debug.LogWarning("fleeing, no navmesh point found");
+                // }
             }
             // Ensure flee lasts at least fleeMinTime until player is no longer in sight
             if (fleeTimer >= fleeMinTime && !InPlayerSight())

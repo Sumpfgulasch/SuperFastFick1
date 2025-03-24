@@ -23,19 +23,19 @@ public class AudioManager : MonoBehaviour
 
     public void PlayRunSound()
     {
-        if (runAudio != null && !runAudio.isPlaying)
-            runAudio.Play();
+        // if (runAudio != null && !runAudio.isPlaying)
+        //     runAudio.Play();
     }
 
     public void StopRunSound()
     {
-        if (runAudio != null && runAudio.isPlaying)
-            runAudio.Stop();
+        // if (runAudio != null && runAudio.isPlaying)
+        //     runAudio.Stop();
     }
 
     public void PlayAttackSound()
     {
-        if (attackAudio != null)
-            attackAudio.PlayOneShot(attackAudio.clip);
+        // if (attackAudio != null)
+        //     attackAudio.PlayOneShot(attackAudio.clip);
     }
 }
