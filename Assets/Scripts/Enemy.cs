@@ -3,6 +3,8 @@ using UnityEngine.AI;
 using DG.Tweening;
 using FMOD.Studio;
 using Klang.Seed.Audio;
+using Unity.VisualScripting;
+using UnityEngine.Serialization;
 
 public class Enemy : MonoBehaviour
 {
@@ -17,6 +19,7 @@ public float fleeSpeed = 7f;
 public float detectionRadius = 10f;
 public float fleeMinTime = 5f;
 public float recoverTime = 5f;
+public float mapEdgeThreshold = 0.5f;
 
 private int currentWaypointIndex = 0;
 private float fleeTimer = 0f;
@@ -71,8 +74,15 @@ private void UpdateFmodParameter(int enemyState) {
     AudioManager.Instance.SetLocalParameter(audioInstance, FmodParameter.ENEMY_STATE, enemyState);
 }
 
+
+
 void Update()
 {
+    if (currentState != State.Idle && IsAtMapBorder()) {
+        Destroy();
+        return;
+    }
+    
     switch (currentState)
     {
         case State.Idle:
@@ -91,6 +101,7 @@ void Update()
 
         case State.Flee:
             fleeTimer += Time.deltaTime;
+            
             if (playerTransform != null)
             {
                 // Calculate a destination in the opposite direction from the player
@@ -99,9 +110,6 @@ void Update()
                 NavMeshHit hit;
                 if (NavMesh.SamplePosition(fleeDestination, out hit, 10f, NavMesh.AllAreas))
                     agent.SetDestination(hit.position);
-                // else {
-                //     Debug.LogWarning("fleeing, no navmesh point found");
-                // }
             }
             // Ensure flee lasts at least fleeMinTime until player is no longer in sight
             if (fleeTimer >= fleeMinTime && !InPlayerSight())
@@ -119,6 +127,23 @@ void Update()
             break;
     }
 
+}
+
+private bool IsAtMapBorder() {
+    NavMeshHit hit;
+    // Find the closest NavMesh edge from the agent's current position.
+    var areaMask = LayerMask.GetMask("Ground");
+    
+    if (NavMesh.FindClosestEdge(transform.position, out hit, NavMesh.AllAreas))
+    {
+        // hit.distance gives you the distance from the position to the closest edge.
+        if (hit.distance < mapEdgeThreshold)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 // Checks whether the player is within detectionRadius and unobstructed by obstacles.
@@ -190,9 +215,15 @@ private void StartScaleTween(float scaleMultiplier, float duration)
 }
 
 // Called when the enemy is “eaten” by the player.
-public void Die()
-{
+public void Die() {
+    Destroy();
+}
+
+private void Destroy() {
+    AudioManager.Instance.StopAudio(audioInstance);
+    DOTween.KillAll(gameObject);
     Destroy(gameObject);
+    Destroy(this);
 }
 
 // Optional: visualize the detection radius in the Scene view
