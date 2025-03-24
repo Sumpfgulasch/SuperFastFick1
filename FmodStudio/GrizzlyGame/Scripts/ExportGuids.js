@@ -4,7 +4,7 @@
  */
 
 studio.menu.addMenuItem({
-    name: "Seed\\Build",
+    name: "Build",
     execute: function() { main(); },
 });
 
@@ -24,7 +24,7 @@ function buildReferences(){
     var headerFileName = "FmodGuids.cs";
     var outputPath = studio.project.filePath;
     var projectName = outputPath.substr(outputPath.lastIndexOf("/") + 1, outputPath.length);
-    outputPath = outputPath.substr(0, outputPath.indexOf("SuperFastFick1")) + "/Assets/Scripts/" + headerFileName;
+    outputPath = outputPath.substr(0, outputPath.indexOf("FmodStudio/")) + "/Assets/Scripts/" + headerFileName;
 
     var textFile = studio.system.getFile(outputPath);
     if (!textFile.open(studio.system.openMode.WriteOnly)) {
@@ -36,7 +36,7 @@ function buildReferences(){
     textFile.writeText("/*\r\n    " + headerFileName + " - FMOD Studio API\r\n\r\n    Generated GUIDs for project '" + projectName +"'\r\n*/\r\n\r\n");
     textFile.writeText("using System;\r\n");
     textFile.writeText("using System.Collections.Generic;\r\n\r\n")
-    textFile.writeText("namespace Klang.Seed.Audio\r\n{\r\n");
+    textFile.writeText("namespace Audio\r\n{\r\n");
 
     writeAllGUIDs(textFile);
 

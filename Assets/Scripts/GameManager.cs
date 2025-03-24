@@ -1,4 +1,4 @@
-/*using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -85,4 +85,4 @@ public void RestartGame()
     Time.timeScale = 1f;
     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 }
-}*/
+}
