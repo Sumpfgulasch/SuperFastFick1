@@ -1122,6 +1122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c748352ab0cf3a646a815ea2ec9a6ccb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fleeingEnemies: 0
 --- !u!4 &546476502
 Transform:
   m_ObjectHideFlags: 0
@@ -1713,9 +1714,9 @@ MonoBehaviour:
   hungerNeed: 100
   hungerDepletionRate: 0
   hungerFillAmount: 20
-  attackRange: 2.35
+  attackRange: 4
   attackDuration: 0.3
-  attackScaleMultiplier: 2
+  attackScaleMultiplier: 2.5
 --- !u!54 &987929996
 Rigidbody:
   m_ObjectHideFlags: 0

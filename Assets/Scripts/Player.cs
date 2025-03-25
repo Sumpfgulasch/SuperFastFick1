@@ -48,9 +48,19 @@ void Update()
     if (hungerNeed < 0) hungerNeed = 0f; // GameManager will check for game over
 
     // Read input for horizontal and vertical movement (top-down on XZ)
-    float h = Input.GetAxis("Horizontal");
-    float v = Input.GetAxis("Vertical");
-    Vector3 direction = new Vector3(h, 0, v).normalized;
+    // float h = Input.GetAxis("Horizontal");
+    // float v = Input.GetAxis("Vertical");
+    var horizontalValue = 0;
+    var verticalValue = 0;
+    if (Input.GetKey(KeyCode.LeftArrow))
+        horizontalValue = -1;
+    else if (Input.GetKey(KeyCode.RightArrow))
+        horizontalValue = 1;
+    if (Input.GetKey(KeyCode.UpArrow))
+        verticalValue = 1;
+    else if (Input.GetKey(KeyCode.DownArrow))
+        verticalValue = -1;
+    Vector3 direction = new Vector3(horizontalValue, 0, verticalValue).normalized;
     
     // Determine sprinting – hold Left Shift to sprint, which increases speed (and “noise”)
     bool isSprinting = Input.GetKey(KeyCode.LeftShift);
