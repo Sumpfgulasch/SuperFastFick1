@@ -24,6 +24,7 @@ public class Enemy : MonoBehaviour {
     public float fleeMinTime = 5f;
     public float recoverTime = 5f;
     public float mapEdgeThreshold = 0.5f;
+    public LayerMask boundaryWallLayer;
 
     private int currentWaypointIndex = 0;
     private float fleeTimer = 0f;
@@ -100,29 +101,28 @@ public class Enemy : MonoBehaviour {
                     Vector3 fleeDirection = (transform.position - playerTransform.position).normalized;
                     Vector3 finalDirection = fleeDirection;
 
-                    NavMeshHit navHit;
-                    // if (NavMesh.FindClosestEdge(transform.position, out navHit, NavMesh.AllAreas) && navHit.distance < mapEdgeThreshold)
-                    // {
-                    //     Vector3 awayFromWallDirection = navHit.normal;
-                    //
-                    //     // Check if the enemy is being pushed directly into the wall
-                    //     if (Vector3.Dot(fleeDirection, awayFromWallDirection) < -0.7f)
-                    //     {
-                    //         // Flee left or right along the wall
-                    //         finalDirection = Vector3.Cross(awayFromWallDirection, Vector3.up);
-                    //     }
-                    //     else
-                    //     {
-                    //         // Combine flee direction with wall avoidance
-                    //         finalDirection = (fleeDirection + awayFromWallDirection).normalized;
-                    //     }
-                    // }
+                    if (IsNearBoundaryWall(out Vector3 wallNormal))
+                    {
+                        // Check if the enemy is being pushed directly into the wall
+                        if (Vector3.Dot(fleeDirection, wallNormal) < -0.7f)
+                        {
+                            // Flee left or right along the wall
+                            finalDirection = Vector3.Cross(wallNormal, Vector3.up);
+                            if (Random.value > 0.5f)
+                            {
+                                finalDirection = -finalDirection;
+                            }
+                        }
+                        else
+                        {
+                            // Combine flee direction with wall avoidance
+                            finalDirection = (fleeDirection + wallNormal).normalized;
+                        }
+                    }
 
                     Vector3 fleeDestination = transform.position + finalDirection * 10f;
-                    Debug.DrawLine(transform.position, fleeDestination, Color.red);
-                    if (NavMesh.SamplePosition(fleeDestination, out navHit, 10f, NavMesh.AllAreas)) {
+                    if (NavMesh.SamplePosition(fleeDestination, out var navHit, 10f, NavMesh.AllAreas)) {
                         agent.SetDestination(navHit.position);
-                        Debug.DrawLine(transform.position, navHit.position, Color.blue);
                     }
                 }
 
@@ -143,14 +143,16 @@ public class Enemy : MonoBehaviour {
         }
     }
 
-    private bool IsAtMapBorder() {
-        NavMeshHit hit;
-        // Find the closest NavMesh edge from the agent's current position.
-        var areaMask = LayerMask.GetMask("Ground");
+    private bool IsNearBoundaryWall(out Vector3 hitNormal)
+    {
+        hitNormal = Vector3.zero;
+        Vector3[] directions = { Vector3.forward, Vector3.back, Vector3.left, Vector3.right };
 
-        if (NavMesh.FindClosestEdge(transform.position, out hit, NavMesh.AllAreas)) {
-            // hit.distance gives you the distance from the position to the closest edge.
-            if (hit.distance < mapEdgeThreshold) {
+        foreach (var dir in directions)
+        {
+            if (Physics.Raycast(transform.position, dir, out RaycastHit hit, mapEdgeThreshold, boundaryWallLayer))
+            {
+                hitNormal = hit.normal;
                 return true;
             }
         }
