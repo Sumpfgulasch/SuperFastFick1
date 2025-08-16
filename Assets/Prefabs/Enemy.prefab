@@ -179,4 +179,4 @@ MonoBehaviour:
   detectionRadius: 10
   fleeMinTime: 5
   recoverTime: 5
-  mapEdgeThreshold: 2
+  mapEdgeThreshold: 5

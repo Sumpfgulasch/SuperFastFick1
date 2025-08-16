@@ -100,7 +100,7 @@ public class Enemy : MonoBehaviour {
                     Vector3 fleeDirection = (transform.position - playerTransform.position).normalized;
                     Vector3 finalDirection = fleeDirection;
 
-                    // NavMeshHit navHit;
+                    NavMeshHit navHit;
                     // if (NavMesh.FindClosestEdge(transform.position, out navHit, NavMesh.AllAreas) && navHit.distance < mapEdgeThreshold)
                     // {
                     //     Vector3 awayFromWallDirection = navHit.normal;
@@ -120,8 +120,9 @@ public class Enemy : MonoBehaviour {
 
                     Vector3 fleeDestination = transform.position + finalDirection * 10f;
                     Debug.DrawLine(transform.position, fleeDestination, Color.red);
-                    if (NavMesh.SamplePosition(fleeDestination, out var navHit, 10f, NavMesh.AllAreas)) {
+                    if (NavMesh.SamplePosition(fleeDestination, out navHit, 10f, NavMesh.AllAreas)) {
                         agent.SetDestination(navHit.position);
+                        Debug.DrawLine(transform.position, navHit.position, Color.blue);
                     }
                 }
 
