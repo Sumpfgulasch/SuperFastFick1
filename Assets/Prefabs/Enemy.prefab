@@ -174,9 +174,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04ec5fc6e4f8d0e4ba8df41c6196e741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypoints: []
   idleSpeed: 3.5
   fleeSpeed: 7
   detectionRadius: 10
   fleeMinTime: 5
   recoverTime: 5
+  mapEdgeThreshold: 2

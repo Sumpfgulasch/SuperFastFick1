@@ -7,10 +7,9 @@ using Klang.Seed.Audio;
 public class Player : MonoBehaviour
 {
     [Header("Input Settings")]
-    public InputActionAsset inputAsset;
-    public InputSystem_Actions inputSystemActions;
-
+    private InputSystem_Actions inputSystemActions;
     private InputAction moveAction;
+    private InputAction sprintAction;
 
     [Header("Movement Settings")]
     public float walkSpeed = 5f;
@@ -38,18 +37,21 @@ private bool isAttacking = false;
 
     void Awake()
     {
-        moveAction = inputSystemActions.Player.Move;
+        inputSystemActions = new InputSystem_Actions();
+        var playerActions = inputSystemActions.Player;
+        moveAction = playerActions.Move;
+        sprintAction = playerActions.Sprint;
     }
 
     void OnEnable()
     {
-        inputAsset.FindActionMap("Player").Enable();
+        inputSystemActions.Player.Enable();
         inputSystemActions.Player.Attack.started += OnAttack;
     }
 
     void OnDisable()
     {
-        inputAsset.FindActionMap("Player").Disable();
+        inputSystemActions.Player.Disable();
         inputSystemActions.Player.Attack.started -= OnAttack;
     }
 
@@ -76,7 +78,7 @@ void Update()
     Vector3 direction = new Vector3(moveInput.x, 0, moveInput.y).normalized;
 
     // Determine sprinting – hold Left Shift to sprint, which increases speed (and “noise”)
-    bool isSprinting = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
+    bool isSprinting = sprintAction.IsPressed();
     float speed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
 
     // Move player if there is input and not attacking
@@ -106,7 +108,7 @@ void Update()
 
 private void OnAttack(InputAction.CallbackContext context)
 {
-    if (!isAttacking)
+    if (!isAttacking && context.ReadValueAsButton())
     {
         StartCoroutine(Attack());
     }

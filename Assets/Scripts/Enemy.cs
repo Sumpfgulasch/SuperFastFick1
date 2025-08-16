@@ -97,13 +97,31 @@ public class Enemy : MonoBehaviour {
                 fleeTimer += Time.deltaTime;
 
                 if (playerTransform != null) {
-                    // Calculate a destination in the opposite direction from the player
                     Vector3 fleeDirection = (transform.position - playerTransform.position).normalized;
-                    Vector3 fleeDestination = transform.position + fleeDirection * 10f;
-                    NavMeshHit hit;
-                    if (NavMesh.SamplePosition(fleeDestination, out hit, 10f, NavMesh.AllAreas)) {
-                        agent.SetDestination(hit.position);
-                        Debug.DrawLine(hit.position, transform.position, Color.red, 1f);
+                    Vector3 finalDirection = fleeDirection;
+
+                    // NavMeshHit navHit;
+                    // if (NavMesh.FindClosestEdge(transform.position, out navHit, NavMesh.AllAreas) && navHit.distance < mapEdgeThreshold)
+                    // {
+                    //     Vector3 awayFromWallDirection = navHit.normal;
+                    //
+                    //     // Check if the enemy is being pushed directly into the wall
+                    //     if (Vector3.Dot(fleeDirection, awayFromWallDirection) < -0.7f)
+                    //     {
+                    //         // Flee left or right along the wall
+                    //         finalDirection = Vector3.Cross(awayFromWallDirection, Vector3.up);
+                    //     }
+                    //     else
+                    //     {
+                    //         // Combine flee direction with wall avoidance
+                    //         finalDirection = (fleeDirection + awayFromWallDirection).normalized;
+                    //     }
+                    // }
+
+                    Vector3 fleeDestination = transform.position + finalDirection * 10f;
+                    Debug.DrawLine(transform.position, fleeDestination, Color.red);
+                    if (NavMesh.SamplePosition(fleeDestination, out var navHit, 10f, NavMesh.AllAreas)) {
+                        agent.SetDestination(navHit.position);
                     }
                 }
 
