@@ -1,12 +1,19 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using DG.Tweening;
 using Klang.Seed.Audio;
 
 public class Player : MonoBehaviour
 {
-[Header("Movement Settings")]
-public float walkSpeed = 5f;
+    [Header("Input Settings")]
+    public InputActionAsset inputAsset;
+    public InputSystem_Actions inputSystemActions;
+
+    private InputAction moveAction;
+
+    [Header("Movement Settings")]
+    public float walkSpeed = 5f;
 public float sprintMultiplier = 1.5f;
 
 [Header("Hunger Settings")]
@@ -26,12 +33,29 @@ private Color originalColor;
 private Tween moveTween;
 private bool isAttacking = false;
 
-// Reference to the GameManager (to update score on enemy “eaten”)
-private GameManager gameManager;
+    // Reference to the GameManager (to update score on enemy “eaten”)
+    private GameManager gameManager;
 
-void Start()
-{
-    originalScale = transform.localScale;
+    void Awake()
+    {
+        moveAction = inputSystemActions.Player.Move;
+    }
+
+    void OnEnable()
+    {
+        inputAsset.FindActionMap("Player").Enable();
+        inputSystemActions.Player.Attack.started += OnAttack;
+    }
+
+    void OnDisable()
+    {
+        inputAsset.FindActionMap("Player").Disable();
+        inputSystemActions.Player.Attack.started -= OnAttack;
+    }
+
+    void Start()
+    {
+        originalScale = transform.localScale;
     rend = GetComponent<Renderer>();
     if (rend != null)
         originalColor = rend.material.color;
@@ -47,23 +71,12 @@ void Update()
     hungerNeed -= hungerDepletionRate * Time.deltaTime;
     if (hungerNeed < 0) hungerNeed = 0f; // GameManager will check for game over
 
-    // Read input for horizontal and vertical movement (top-down on XZ)
-    // float h = Input.GetAxis("Horizontal");
-    // float v = Input.GetAxis("Vertical");
-    var horizontalValue = 0;
-    var verticalValue = 0;
-    if (Input.GetKey(KeyCode.LeftArrow))
-        horizontalValue = -1;
-    else if (Input.GetKey(KeyCode.RightArrow))
-        horizontalValue = 1;
-    if (Input.GetKey(KeyCode.UpArrow))
-        verticalValue = 1;
-    else if (Input.GetKey(KeyCode.DownArrow))
-        verticalValue = -1;
-    Vector3 direction = new Vector3(horizontalValue, 0, verticalValue).normalized;
-    
+    // Read input for horizontal and vertical movement from the new Input System
+    Vector2 moveInput = moveAction.ReadValue<Vector2>();
+    Vector3 direction = new Vector3(moveInput.x, 0, moveInput.y).normalized;
+
     // Determine sprinting – hold Left Shift to sprint, which increases speed (and “noise”)
-    bool isSprinting = Input.GetKey(KeyCode.LeftShift);
+    bool isSprinting = Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed;
     float speed = walkSpeed * (isSprinting ? sprintMultiplier : 1f);
 
     // Move player if there is input and not attacking
@@ -89,9 +102,11 @@ void Update()
             AudioManager.Instance.StopRunSound();
         }
     }
+}
 
-    // Attack when Space key is pressed
-    if (Input.GetKeyDown(KeyCode.Space) && !isAttacking)
+private void OnAttack(InputAction.CallbackContext context)
+{
+    if (!isAttacking)
     {
         StartCoroutine(Attack());
     }

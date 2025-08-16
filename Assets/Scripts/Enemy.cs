@@ -79,11 +79,6 @@ public class Enemy : MonoBehaviour {
     }
 
     void Update() {
-        if (CurrentState != State.Idle && IsAtMapBorder()) {
-            Destroy();
-            return;
-        }
-
         switch (CurrentState) {
             case State.Idle:
                 if (waypoints != null && waypoints.Length > 0) {
@@ -106,8 +101,10 @@ public class Enemy : MonoBehaviour {
                     Vector3 fleeDirection = (transform.position - playerTransform.position).normalized;
                     Vector3 fleeDestination = transform.position + fleeDirection * 10f;
                     NavMeshHit hit;
-                    if (NavMesh.SamplePosition(fleeDestination, out hit, 10f, NavMesh.AllAreas))
+                    if (NavMesh.SamplePosition(fleeDestination, out hit, 10f, NavMesh.AllAreas)) {
                         agent.SetDestination(hit.position);
+                        Debug.DrawLine(hit.position, transform.position, Color.red, 1f);
+                    }
                 }
 
                 // Ensure flee lasts at least fleeMinTime until player is no longer in sight
