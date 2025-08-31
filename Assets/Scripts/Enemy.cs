@@ -108,10 +108,6 @@ public class Enemy : MonoBehaviour {
                         {
                             // Flee left or right along the wall
                             finalDirection = Vector3.Cross(wallNormal, Vector3.up);
-                            if (Random.value > 0.5f)
-                            {
-                                finalDirection = -finalDirection;
-                            }
                         }
                         else
                         {
